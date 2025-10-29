@@ -79,6 +79,41 @@ ggplot(pokemon_df, aes(x = hp, y = attack)) +
 ```
 
 
+```{r bind data}
+
+pokemon_df <- pokemon_df %>%
+  mutate(offensive = attack + special_attack + speed)
+
+pokemon_df <- pokemon_df %>%
+  mutate(defensive = defense + special_defense +hp)
+```
+
+
+```{r}
+linear_model_off_deff <- lm(offensive ~ defensive, data=pokemon_df)
+summary(linear_model_off_deff)
+```
+
+```{r plot offensive/defensive}
+cor_result <- cor.test(pokemon_df$defensive, pokemon_df$offensive)
+
+cor_result$estimate  # correlation coefficient
+cor_result$p.value   # p-value
+
+ggplot(pokemon_df, aes(x = defensive, y = offensive)) +
+  geom_point(alpha = 0.6, color = "darkblue") +       # scatter points
+  geom_smooth(method = "lm", se = TRUE, color = "red") +  # regression line
+  theme_minimal() +
+  labs(
+    title = "Combined offensive vs defensive stats of Pokémon",
+    subtitle = paste0("Correlation: ", round(cor_result$estimate, 2),
+                      ", p-value: ", signif(cor_result$p.value, 3)),
+    x = "HP",
+    y = "Attack"
+  )
+```
+
+
 
 
 
