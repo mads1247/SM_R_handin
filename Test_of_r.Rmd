@@ -1,0 +1,82 @@
+---
+title: "Test_r"
+output: pdf_document
+date: "2025-10-29"
+---
+
+
+```{r load-data, include=FALSE}
+library(readr)
+pokemon_df <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv")
+```
+
+```{r libraries, message=FALSE}
+library(tidyverse)
+```
+# Introduction
+
+The chosen dataset comes from tidytuesday and is a dataset regarding Pokemons. It can be found here: https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-04-01
+
+
+# Data presentation
+
+A summery of the data set can be seen below. From this information, it is possible to see which variables makes sense to do statistical test's on. 
+
+As an example "id" and "species_id" does not make sense to use in these test's, because it is a index value more that data value. 
+
+Therefore for this assignment, the chosen variables for further statistical investigation are the Pokémons "attack" and "hp" data. 
+
+```{r Summery}
+summary(pokemon_df)
+```
+To visualize the data, one can plot the two variables against each other. As seen below:
+
+```{r pokemon-plot, fig.width=7, fig.height=5}
+ggplot(pokemon_df, aes(x = attack , y = hp)) +
+  geom_point(alpha = 0.7, size = 3) +
+  theme_minimal() +
+  labs(
+    title = "Pokémon: Attack vs HP",
+    x = "Attack",
+    y = "HP"
+  )
+```
+
+We setup a test, that tests if there is a correlation between the two variables. 
+
+Here our null hypothesis is that the more HP a pokémon has the more attack it will have as well
+```{r test_stat}
+cor_result <- cor.test(pokemon_df$attack, pokemon_df$hp)
+
+cor_result$estimate  # correlation coefficient
+cor_result$p.value   # p-value
+
+
+```
+
+From this we have a very low p-value, meaning that we will have to reject our null hypothesis. 
+Furthermore if one where to fit a linear model to this data we can see the model fit very poorly, both visually as seen below, but it is also possible to examine the correlation coefficient of the fit. 
+
+
+```{r}
+library(ggplot2)
+
+ggplot(pokemon_df, aes(x = hp, y = attack)) +
+  geom_point(alpha = 0.6, color = "darkblue") +       # scatter points
+  geom_smooth(method = "lm", se = TRUE, color = "red") +  # regression line
+  theme_minimal() +
+  labs(
+    title = "Attack vs HP of Pokémon",
+    subtitle = paste0("Correlation: ", round(cor_result$estimate, 2),
+                      ", p-value: ", signif(cor_result$p.value, 3)),
+    x = "HP",
+    y = "Attack"
+  )
+
+```
+
+
+
+
+
+```
