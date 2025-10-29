@@ -52,6 +52,9 @@ cor_result$estimate  # correlation coefficient
 cor_result$p.value   # p-value
 
 
+linear_model <- lm(attack ~ hp, data=pokemon_df)
+summary(linear_model)
+
 ```
 
 From this we have a very low p-value, meaning that we will have to reject our null hypothesis. 
