@@ -78,6 +78,11 @@ ggplot(pokemon_df, aes(x = hp, y = attack)) +
 
 ```
 
+To make the next test a combination of the offensive and defensive stats respectively of the pokémon have been made.
+Considering attack, special_attack and speed offensive traits, and defense, special_defense and hp to be defensive traits.
+The combination of these is made with a simple summation, and save in new columns called offensive and defensive.
+This is done based on the hypothesis that a pokémon with with combined higher offensive stats would have lower defensive stats and vise versa.
+
 
 ```{r bind data}
 
@@ -85,14 +90,19 @@ pokemon_df <- pokemon_df %>%
   mutate(offensive = attack + special_attack + speed)
 
 pokemon_df <- pokemon_df %>%
-  mutate(defensive = defense + special_defense +hp)
+  mutate(defensive = defense + special_defense + hp)
 ```
+
+Using the linear model like before we test to see if there is a correlation between combined offensive and defensive stats of a pokémon.
+Again we get a p-value in the 2e-16 range which means we see no statistical correlation between the offensive and defensive stats.
+
 
 
 ```{r}
 linear_model_off_deff <- lm(offensive ~ defensive, data=pokemon_df)
 summary(linear_model_off_deff)
 ```
+To visualize the same code is reused.
 
 ```{r plot offensive/defensive}
 cor_result <- cor.test(pokemon_df$defensive, pokemon_df$offensive)
@@ -112,6 +122,8 @@ ggplot(pokemon_df, aes(x = defensive, y = offensive)) +
     y = "Attack"
   )
 ```
+
+
 
 
 
